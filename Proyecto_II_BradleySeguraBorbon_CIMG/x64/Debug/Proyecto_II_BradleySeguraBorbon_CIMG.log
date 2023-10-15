@@ -1,2 +1,6 @@
 ﻿  Map.cpp
+C:\Users\Bradley\Documents\Programación\Programacion I\II Proyecto\Proyecto_II_BradleySeguraBorbon_CIMG\Proyecto_II_BradleySeguraBorbon_CIMG\Map.cpp(23,68): warning C4244: 'argument': conversion from 'float' to 'const int', possible loss of data
+C:\Users\Bradley\Documents\Programación\Programacion I\II Proyecto\Proyecto_II_BradleySeguraBorbon_CIMG\Proyecto_II_BradleySeguraBorbon_CIMG\Map.cpp(23,44): warning C4244: 'argument': conversion from 'float' to 'const int', possible loss of data
+C:\Users\Bradley\Documents\Programación\Programacion I\II Proyecto\Proyecto_II_BradleySeguraBorbon_CIMG\Proyecto_II_BradleySeguraBorbon_CIMG\Map.cpp(30,50): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Bradley\Documents\Programación\Programacion I\II Proyecto\Proyecto_II_BradleySeguraBorbon_CIMG\Proyecto_II_BradleySeguraBorbon_CIMG\Map.cpp(30,32): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   Proyecto_II_BradleySeguraBorbon_CIMG.vcxproj -> C:\Users\Bradley\Documents\Programación\Programacion I\II Proyecto\Proyecto_II_BradleySeguraBorbon_CIMG\x64\Debug\Proyecto_II_BradleySeguraBorbon_CIMG.exe
