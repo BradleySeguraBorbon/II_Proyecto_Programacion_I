@@ -30,4 +30,5 @@ public:
 	CImg<unsigned char>* getButtonImage() {
 		return buttonImage;
 	}
+	bool contains(float mouseX, float mouseY);
 };

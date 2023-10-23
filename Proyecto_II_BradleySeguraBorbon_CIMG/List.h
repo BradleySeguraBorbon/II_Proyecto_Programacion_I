@@ -10,7 +10,7 @@ class List {
 public:
 	List() : head(nullptr), back(nullptr) {}
 	~List() {}
-	void pushBack(T value) {
+	void pushBack(T* value) {
 		Node<T>* newNode = new Node<T>(value);
 		if (!head) {
 			head = newNode;
@@ -21,7 +21,7 @@ public:
 		newNode->previous = back;
 		back = newNode;
 	}
-	void deleteElement(T value) {
+	void deleteElement(T* value) {
 		if (!head)
 			return;
 		Node<T>* deletingNode = nullptr;
@@ -58,11 +58,27 @@ public:
 		}
 		cout << endl << endl;
 	}
-	T getElement(int position) {
+	T operator[](int position) {
 		Node<T>* currentNode = head;
 		int currentPosition = 0;
-		while (currentNode || currentPosition != position) {
-
+		while (currentNode) {
+			if (currentPosition == position)
+				return currentNode->data;
+			currentNode = currentNode->next;
+			currentPosition++;
 		}
+		return -1;
+	}
+	T* getFirstElement() {
+		return head->data;
+	}
+	T* getLastElement() {
+		return back->data;
+	}
+	Node<T>* getHeadNode() {
+		return head;
+	}
+	Node<T>* getBackNode() {
+		return back;
 	}
 };
