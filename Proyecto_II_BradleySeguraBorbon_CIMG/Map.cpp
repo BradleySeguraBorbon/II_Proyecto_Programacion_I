@@ -5,8 +5,18 @@ Map::Map() {
 	map.resize(950, 812);
 	CImg<unsigned char>* addRouteImage = new CImg<unsigned char>("Resources/AgregarRuta.png");
 	CImg<unsigned char>* finishRouteImage = new CImg<unsigned char>("Resources/FinalizarRuta.png");
+	CImg<unsigned char>* deleteRouteImage = new CImg<unsigned char>("Resources/EliminarRuta.png");
+	CImg<unsigned char>* saveRoutesImage = new CImg<unsigned char>("Resources/GuardarRutas.png");
+	CImg<unsigned char>* loadRouteImage = new CImg<unsigned char>("Resources/CargarRutas.png");
+	CImg<unsigned char>* showRouteImage = new CImg<unsigned char>("Resources/MostrarRuta.png");
+	CImg<unsigned char>* hideRouteImage = new CImg<unsigned char>("Resources/OcultarRuta.png");
 	addRouteButton = new Button(addRouteImage, 0, 400);
-	finishRouteButton = new Button(finishRouteImage, 0, 400);
+	finishRouteButton = new Button(finishRouteImage, 0, 200);
+	deleteRouteButton = new Button(deleteRouteImage, 0, 400);
+	saveRoutesButton = new Button(saveRoutesImage, 0, 600);
+	loadRouteButton = new Button(loadRouteImage, 400, 500);
+	showRouteButton = new Button(showRouteImage, 0, 400);
+	hideRouteButton = new Button(hideRouteImage, 0, 600);
 }
 
 bool Map::isClicking(float mouseX, float mouseY, Button& buttonPressed) {
@@ -64,6 +74,17 @@ void Map::displayMap() {
 				cin >> name;
 			}
 		}
+		else if (window.button() & 1 and saveRoutesButton->contains(window.mouse_x(), window.mouse_y())) {
+			saveRoutes();
+		}
+		else if (window.button() & 1 and loadRouteButton->contains(window.mouse_x(), window.mouse_y())) {
+			string routeName;
+			cout << "Enter the route name: ";
+			cin >> routeName;
+			Route* newRoute = new Route(name, "red");
+			newRoute->loadRoute(routeName);
+			routes.pushBack(newRoute);
+		}
 		else if (window.button() & 1 and addingRoute and imageContains(mapX, mapY, map, window.mouse_x(), window.mouse_y())) {
 			if (firstVertice) {
 				X = window.mouse_x();
@@ -87,6 +108,8 @@ void Map::displayMap() {
 			background.draw_image(addRouteButton->getX(), addRouteButton->getY(), *finishRouteButton->getButtonImage());
 		else
 			background.draw_image(addRouteButton->getX(), addRouteButton->getY(), *addRouteButton->getButtonImage());
+		background.draw_image(saveRoutesButton->getX(), saveRoutesButton->getY(), *saveRoutesButton->getButtonImage());
+		background.draw_image(loadRouteButton->getX(), loadRouteButton->getY(), *loadRouteButton->getButtonImage());
 		window.display(background);
 	}
 }

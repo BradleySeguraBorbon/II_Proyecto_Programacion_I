@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <fstream>
+#include <string>
 #include "List.h"
 #include "Path.h"
 #include "CImg.h"
@@ -14,6 +15,7 @@ class Route {
 	string color;
 	fstream file;
 	bool show;
+	bool isSelected;
 	
 	unsigned char red[3] = { 255, 1, 1 }, blue[3] = { 1, 1, 255 }, green[3] = { 1, 255, 1 };
 
@@ -37,6 +39,7 @@ public:
 		paths.pushBack(newPath);
 	}
 	void saveRoute();
+	void loadRoute(string routeName);
 	//Path* operator[](int path);
 	void draw(CImg<unsigned char>& window);
 };

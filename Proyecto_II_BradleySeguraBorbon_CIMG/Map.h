@@ -5,6 +5,7 @@
 #include "CImg.h"
 #include "Button.h"
 #include "Vertice.h"
+#include <string>
 
 using namespace std;
 using namespace cimg_library;
@@ -14,6 +15,11 @@ class Map {
 	CImg<unsigned char> map;
 	Button* addRouteButton;
 	Button* finishRouteButton;
+	Button* deleteRouteButton;
+	Button* saveRoutesButton;
+	Button* loadRouteButton;
+	Button* showRouteButton;
+	Button* hideRouteButton;
 
 public:
 	Map();

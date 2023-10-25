@@ -4,6 +4,7 @@ using namespace std;
 
 class Vertice {
 	float x, y;
+	bool isSelected;
 
 public:
 	Vertice() : x(0), y(0) {}
