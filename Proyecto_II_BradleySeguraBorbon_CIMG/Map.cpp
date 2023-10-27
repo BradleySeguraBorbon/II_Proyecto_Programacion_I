@@ -1,8 +1,10 @@
 #include "Map.h"
 
+unsigned char red[3] = { 255, 1, 1 }, blue[3] = { 1, 1, 255 }, green[3] = { 1, 255, 1 };
+
 Map::Map() {
-	map.assign("Resources/map.png");
-	map.resize(950, 812);
+	map.assign("Resources/forza.jpg");
+	map.resize(1080, 607); //950, 812
 	CImg<unsigned char>* addRouteImage = new CImg<unsigned char>("Resources/AgregarRuta.png");
 	CImg<unsigned char>* finishRouteImage = new CImg<unsigned char>("Resources/FinalizarRuta.png");
 	CImg<unsigned char>* deleteRouteImage = new CImg<unsigned char>("Resources/EliminarRuta.png");
@@ -10,13 +12,17 @@ Map::Map() {
 	CImg<unsigned char>* loadRouteImage = new CImg<unsigned char>("Resources/CargarRutas.png");
 	CImg<unsigned char>* showRouteImage = new CImg<unsigned char>("Resources/MostrarRuta.png");
 	CImg<unsigned char>* hideRouteImage = new CImg<unsigned char>("Resources/OcultarRuta.png");
-	addRouteButton = new Button(addRouteImage, 0, 400);
+	CImg<unsigned char>* colorsImage = new CImg<unsigned char>("Resources/colors.jpg");
+	colorsImage->resize(804, 100);
+	addRouteButton = new Button(addRouteImage, 30, 100);
 	finishRouteButton = new Button(finishRouteImage, 0, 200);
 	deleteRouteButton = new Button(deleteRouteImage, 0, 400);
-	saveRoutesButton = new Button(saveRoutesImage, 0, 600);
-	loadRouteButton = new Button(loadRouteImage, 400, 500);
+	saveRoutesButton = new Button(saveRoutesImage, 30, 400);
+	loadRouteButton = new Button(loadRouteImage, 30, 250);
 	showRouteButton = new Button(showRouteImage, 0, 400);
 	hideRouteButton = new Button(hideRouteImage, 0, 600);
+	colorsButton = new Button(colorsImage, 594, 670);
+
 }
 
 bool Map::isClicking(float mouseX, float mouseY, Button& buttonPressed) {
@@ -48,9 +54,11 @@ void Map::saveRoutes() {
 void Map::displayMap() {
 	const int windowWidth = 1920, windowHeight = 1080;
 	CImgDisplay window(windowWidth, windowHeight, "MAP");
-	CImg<unsigned char> background(windowWidth, windowHeight, 1, 3, 255);
+	CImg<unsigned char> background(windowWidth, windowHeight, 1, 3, 255); //windowWidth, windowHeight, 1, 3, 255
+	CImg<unsigned char> backgroundImage("Resources/background.jpg");
+	backgroundImage.resize(1540, 790);
 
-	const int mapX = (1540 - map.width()) / 2, mapY = (790 - map.height()) / 2;
+	const int mapX = (1540 - map.width()), mapY = 0; //(790 - map.height());
 
 	float X, Y;
 	bool addingRoute = false;
@@ -102,6 +110,7 @@ void Map::displayMap() {
 				firstVertice = new Vertice(X, Y);
 			}
 		}
+		background.draw_image(backgroundImage);
 		background.draw_image(mapX, mapY, map);
 		drawRoutes(background);
 		if(addingRoute)
@@ -110,6 +119,11 @@ void Map::displayMap() {
 			background.draw_image(addRouteButton->getX(), addRouteButton->getY(), *addRouteButton->getButtonImage());
 		background.draw_image(saveRoutesButton->getX(), saveRoutesButton->getY(), *saveRoutesButton->getButtonImage());
 		background.draw_image(loadRouteButton->getX(), loadRouteButton->getY(), *loadRouteButton->getButtonImage());
+		background.draw_image(colorsButton->getX(), colorsButton->getY(), *colorsButton->getButtonImage());
+		background.draw_circle(colorsButton->getX(), colorsButton->getY(), 0.5, red);
+		background.draw_circle(colorsButton->getX(), colorsButton->getY() + colorsButton->getButtonImage()->height(), 0.5, red);
+		background.draw_circle(colorsButton->getX() + colorsButton->getButtonImage()->width(), colorsButton->getY(), 0.5, red);
+		background.draw_circle(colorsButton->getX() + colorsButton->getButtonImage()->width(), colorsButton->getY() + colorsButton->getButtonImage()->height(), 0.5, red);
 		window.display(background);
 	}
 }

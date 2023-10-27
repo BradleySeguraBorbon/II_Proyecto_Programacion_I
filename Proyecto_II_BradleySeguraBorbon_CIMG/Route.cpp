@@ -49,12 +49,12 @@ void Route::draw(CImg<unsigned char>& window) {
 	Node<Path>* currentPath = paths.getHeadNode();
 	if (show) {
 		while (currentPath) {
-			currentPath->data->draw(window, red);
+			currentPath->data->draw(window, pink);
 			currentPath = currentPath->next;
 		}
 		return;
 	}
-	window.draw_circle(currentPath->data->getStartPoint()->getX(), currentPath->data->getStartPoint()->getY(), 3, red);
+	window.draw_circle(currentPath->data->getStartPoint()->getX(), currentPath->data->getStartPoint()->getY(), 3, yellow);
 }
 
 void Route::saveRoute() {

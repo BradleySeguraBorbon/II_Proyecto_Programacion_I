@@ -20,6 +20,7 @@ class Map {
 	Button* loadRouteButton;
 	Button* showRouteButton;
 	Button* hideRouteButton;
+	Button* colorsButton;
 
 public:
 	Map();
