@@ -1,7 +1,7 @@
 #include <iostream>
 #include "CImg.h"
 #include "Route.h"
-#include "Path.h"
+
 #include "Vertice.h"
 #include "Map.h"
 

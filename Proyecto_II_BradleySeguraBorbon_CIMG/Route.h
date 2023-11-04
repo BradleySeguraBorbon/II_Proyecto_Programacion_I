@@ -3,44 +3,46 @@
 #include <fstream>
 #include <string>
 #include "List.h"
-#include "Path.h"
 #include "CImg.h"
+#include "Vertice.h"
 
 using namespace std;
 using namespace cimg_library;
 
 class Route {
-	List<Path> paths;
+	List<Vertice> vertices;
 	string name;
-	string color;
+	unsigned char* color;
 	fstream file;
 	bool show;
 	bool isSelected;
-	
-	unsigned char red[3] = { 255, 1, 1 }, blue[3] = { 1, 1, 255 }, green[3] = { 1, 255, 1 }, yellow[3] = { 255, 255, 0 }, cian[3] = { 0, 255, 255 },
-		orange[3] = { 255, 60, 0 }, purple[3] = { 204, 0, 204 }, pink[3] = { 255, 51, 255 };
 
 public:
-	Route() {}
-	Route(string _name, string _color) : name(_name), color(_color), show(true) {}
+	Route() {
+		color = new unsigned char[3];
+		show = true;
+	}
+	Route(string _name, unsigned char* _color) : name(_name), color(_color), show(true) {}
 	Route(const Route& otherRoute) {
-		paths = otherRoute.paths;
+		vertices = otherRoute.vertices;
 		name = otherRoute.name;
 		color = otherRoute.color;
 	}
 	string getName();
-	string getColor();
+	unsigned char* getColor();
 	fstream& getFile();
 	Vertice* getFirstVertice();
 	bool isShowing();
+	bool selected();
 	void setName(string _name);
-	void setColor(string _color);
+	void setColor(unsigned char* _color);
 	void setShow(bool _show);
-	void addPath(Path* newPath) {
-		paths.pushBack(newPath);
-	}
+	void setSelection(bool selection);
+	void addVertice(float x, float y);
 	void saveRoute();
 	void loadRoute(string routeName);
 	//Path* operator[](int path);
 	void draw(CImg<unsigned char>& window);
+	bool contains(float x, float y);
+	void toString();
 };

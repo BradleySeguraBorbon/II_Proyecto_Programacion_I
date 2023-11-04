@@ -17,7 +17,7 @@ string Route::getName() {
 	return name;
 }
 
-string Route::getColor() {
+unsigned char* Route::getColor() {
 	return color;
 }
 
@@ -26,18 +26,22 @@ fstream& Route::getFile() {
 }
 
 Vertice* Route::getFirstVertice() {
-	return paths.getFirstElement()->getStartPoint();
+	return vertices.getFirstElement();
 }
 
 bool Route::isShowing() {
 	return show;
 }
 
+bool Route::selected() {
+	return isSelected;
+}
+
 void Route::setName(string _name) {
 	name = _name;
 }
 
-void Route::setColor(string _color) {
+void Route::setColor(unsigned char* _color) {
 	color = _color;
 }
 
@@ -45,26 +49,47 @@ void Route::setShow(bool _show) {
 	show = _show;
 }
 
+void Route::setSelection(bool selection) {
+	isSelected = selection;
+}
+
+void Route::addVertice(float x, float y) {
+	Vertice* newVertice = new Vertice(x, y);
+	vertices.pushBack(newVertice);
+	newVertice = nullptr;
+}
+
 void Route::draw(CImg<unsigned char>& window) {
-	Node<Path>* currentPath = paths.getHeadNode();
-	if (show) {
-		while (currentPath) {
-			currentPath->data->draw(window, pink);
-			currentPath = currentPath->next;
-		}
-		return;
+	unsigned char white[3] = { 255, 255, 255 };
+	Node<Vertice>* currentVertice = vertices.getHeadNode();
+	if (!currentVertice) return;
+	if (isSelected) {
+		window.draw_circle(currentVertice->data->getX(), currentVertice->data->getY(), 8, color);
+		window.draw_circle(currentVertice->data->getX(), currentVertice->data->getY(), 4, white);
 	}
-	window.draw_circle(currentPath->data->getStartPoint()->getX(), currentPath->data->getStartPoint()->getY(), 3, yellow);
+	else
+		window.draw_circle(currentVertice->data->getX(), currentVertice->data->getY(), 3, color);
+
+	while (currentVertice->next && show) {
+		window.draw_line(currentVertice->data->getX(), currentVertice->data->getY(), currentVertice->next->data->getX(), currentVertice->next->data->getY(), color);
+		if (isSelected) {
+			window.draw_circle(currentVertice->next->data->getX(), currentVertice->next->data->getY(), 8, color);
+			window.draw_circle(currentVertice->next->data->getX(), currentVertice->next->data->getY(), 4, white);
+		}
+		else
+			window.draw_circle(currentVertice->next->data->getX(), currentVertice->next->data->getY(), 3, color);
+		currentVertice = currentVertice->next;
+	}
 }
 
 void Route::saveRoute() {
 	file.open(name + ".txt", ios::out);
 	if (file.is_open()) {
-		Node<Path>* currentPath = paths.getHeadNode();
-		while (currentPath) {
-			file << currentPath->data->getStartPoint()->getX() << "," << currentPath->data->getStartPoint()->getY() << ";" <<
-				currentPath->data->getEndPoint()->getX() << "," << currentPath->data->getEndPoint()->getY() << endl;
-			currentPath = currentPath->next;
+		file << to_string(color[0]) << "," << to_string(color[1]) << "," << to_string(color[2]) << endl;
+		Node<Vertice>* currentVertice = vertices.getHeadNode();
+		while (currentVertice) {
+			file << currentVertice->data->getX() << "," << currentVertice->data->getY() << endl;
+			currentVertice = currentVertice->next;
 		}
 		file.close();
 	}
@@ -74,33 +99,47 @@ void Route::saveRoute() {
 
 void Route::loadRoute(string routeName) {
 	string currentLine, substring;
-	Vertice** vertices = new Vertice * [2];
-	Path* currentPath;
-	int i = 0;
+	Vertice* newVertice = nullptr;
+	float x, y;
+	int i = 0, commaPosition;
 	file.open(routeName + ".txt", ios::in);
 	if (file.is_open()) {
+		getline(file, currentLine);
+		while (i < 3) {
+			commaPosition = (i != 2 ?  currentLine.find(',') : currentLine.length()); 
+			substring = currentLine.substr(0, commaPosition);
+			color[i] = static_cast<unsigned char>(stoi(substring));
+			if(i != 2) currentLine = currentLine.substr(commaPosition + 1, currentLine.length());
+			i++;
+		}
 		while (getline(file, currentLine)) {
-			while (i < 2) {
-				vertices[i] = new Vertice();
-				size_t commaPosition = currentLine.find(','), semiColonPosition = (i == 0 ? currentLine.find(';') : currentLine.size());
-				substring = currentLine.substr(0, commaPosition);
-				vertices[i]->setX(stof(substring));
-				substring = currentLine.substr(commaPosition + 1, semiColonPosition);
-				vertices[i]->setY(stof(substring));
-				if(i == 0) 
-					currentLine = currentLine.substr(semiColonPosition + 1, currentLine.size());
-				i++;
-			}
-			currentPath = new Path(vertices[0], vertices[1]);
-			paths.pushBack(currentPath);
-			vertices[0] = nullptr;
-			vertices[1] = nullptr;
-			currentPath = nullptr;
-			currentLine = "";
-			i = 0;
+			commaPosition = currentLine.find(',');
+			x = stof(currentLine.substr(0, commaPosition));
+			y = stof(currentLine.substr(commaPosition + 1, currentLine.length()));
+			newVertice = new Vertice(x, y);
+			vertices.pushBack(newVertice);
+			newVertice = nullptr;
 		}
 		file.close();
 	}
 	else
 		cout << "ERROOOR";
+	cout << x << "," << y << endl;
+}
+
+bool Route::contains(float x, float y) {
+	Node<Vertice>* currentVertice = vertices.getHeadNode();
+	while (currentVertice) {
+		if (currentVertice->data->contains(x, y)) {
+			isSelected ? isSelected = false : isSelected = true;
+			return true;
+		}
+		currentVertice = currentVertice->next;
+	}
+	return false;
+}
+
+void Route::toString() {
+	cout << "ROUTE NAME: " << name << endl;
+	vertices.toString();
 }

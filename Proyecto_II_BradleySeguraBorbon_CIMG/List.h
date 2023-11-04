@@ -24,6 +24,27 @@ public:
 	void deleteElement(T* value) {
 		if (!head)
 			return;
+		Node<T>* currentNode = head;
+		if (currentNode->data == value) {
+			head = currentNode->next;
+			if (head)
+				head->previous = nullptr;
+			else 
+				back = nullptr; 
+		}
+		else {
+			while (currentNode) {
+				if (currentNode->data == value) {
+					currentNode->previous->next = currentNode->next;
+					if (currentNode->next) currentNode->next->previous = currentNode->previous;
+					else back = currentNode->previous;
+				}
+				currentNode = currentNode->next;
+			}
+		}
+		delete currentNode;
+
+		/*
 		Node<T>* deletingNode = nullptr;
 		if (value == head->data) {
 			deletingNode = head;
@@ -45,7 +66,7 @@ public:
 				return;
 			}
 			currentNode = currentNode->next;
-		}
+		}*/
 
 		//optimizar
 	}
@@ -80,5 +101,12 @@ public:
 	}
 	Node<T>* getBackNode() {
 		return back;
+	}
+	void toString() {
+		Node<T>* currentNode = head;
+		while (currentNode) {
+			currentNode->data->toString();
+			currentNode = currentNode->next;
+		}
 	}
 };

@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <cmath>
 using namespace std;
 
 class Vertice {
@@ -14,4 +15,7 @@ public:
 	void setY(float _y);
 	float getX();
 	float getY();
+	bool contains(float x2, float y2);
+	float distance(float x2, float y2);
+	void toString();
 };
