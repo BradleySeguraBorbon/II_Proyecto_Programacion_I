@@ -58,6 +58,7 @@ void Route::setSelection(bool selection) {
 }
 
 void Route::setSelectedVertice(Vertice* selectedVertice) {
+	if (!selectedVertice) this->selectedVertice->setSelection(false);
 	this->selectedVertice = selectedVertice;
 }
 
@@ -65,6 +66,14 @@ void Route::addVertice(float x, float y) {
 	Vertice* newVertice = new Vertice(x, y);
 	vertices.pushBack(newVertice);
 	newVertice = nullptr;
+}
+
+void Route::deleteSelectedVertice() {
+	if (selectedVertice) {
+		vertices.deleteElement(selectedVertice);
+		selectedVertice = nullptr;
+	}
+	
 }
 
 void Route::draw(CImg<unsigned char>& window) {
@@ -144,7 +153,7 @@ bool Route::contains(float x, float y) {
 	Node<Vertice>* currentVertice = vertices.getHeadNode();
 	while (currentVertice) {
 		if (currentVertice->data->contains(x, y)) {
-			if (isSelected) {
+			if (isSelected and !selectedVertice) {
 				currentVertice->data->setSelection(true);
 				selectedVertice = currentVertice->data;
 			}

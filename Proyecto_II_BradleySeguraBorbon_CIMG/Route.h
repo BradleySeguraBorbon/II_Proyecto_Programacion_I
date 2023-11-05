@@ -44,6 +44,7 @@ public:
 	void setSelection(bool selection);
 	void setSelectedVertice(Vertice* selectedVertice);
 	void addVertice(float x, float y);
+	void deleteSelectedVertice();
 	void saveRoute();
 	void loadRoute(string routeName);
 	//Path* operator[](int path);
