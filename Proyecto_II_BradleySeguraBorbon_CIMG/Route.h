@@ -16,17 +16,20 @@ class Route {
 	fstream file;
 	bool show;
 	bool isSelected;
+	Vertice* selectedVertice;
 
 public:
 	Route() {
 		color = new unsigned char[3];
 		show = true;
+		selectedVertice = nullptr;
 	}
-	Route(string _name, unsigned char* _color) : name(_name), color(_color), show(true) {}
+	Route(string _name, unsigned char* _color) : name(_name), color(_color), show(true), selectedVertice(nullptr) {}
 	Route(const Route& otherRoute) {
 		vertices = otherRoute.vertices;
 		name = otherRoute.name;
 		color = otherRoute.color;
+		selectedVertice = otherRoute.selectedVertice;
 	}
 	string getName();
 	unsigned char* getColor();
@@ -34,10 +37,12 @@ public:
 	Vertice* getFirstVertice();
 	bool isShowing();
 	bool selected();
+	Vertice* getSelectedVertice();
 	void setName(string _name);
 	void setColor(unsigned char* _color);
 	void setShow(bool _show);
 	void setSelection(bool selection);
+	void setSelectedVertice(Vertice* selectedVertice);
 	void addVertice(float x, float y);
 	void saveRoute();
 	void loadRoute(string routeName);

@@ -172,15 +172,28 @@ void Map::displayMap() {
 			hideRouteButton->setAvailability(false);
 			cancelSelectionButton->setAvailability(false);
 		}
-		else if (cancelSelectionButton->isAvailable() and window.button() & 1 and cancelSelectionButton->contains(window.mouse_x(), window.mouse_y())) {
+		else if (cancelSelectionButton->isAvailable() and cancelSelectionButton->contains(window.mouse_x(), window.mouse_y()) and window.button() & 1) {
 			addRouteButton->setAvailability(true);
 			loadRouteButton->setAvailability(true);
 			saveRoutesButton->setAvailability(true);
 			deleteRouteButton->setAvailability(false);
 			hideRouteButton->setAvailability(false);
+			showRouteButton->setAvailability(false);
 			cancelSelectionButton->setAvailability(false);
 			selectedRoute->setSelection(false);
 			selectedRoute = nullptr;
+		}
+		else if ((showRouteButton->isAvailable() || hideRouteButton->isAvailable()) and showRouteButton->contains(window.mouse_x(), window.mouse_y()) and window.button() & 1) {
+			if (selectedRoute->isShowing()) {
+				selectedRoute->setShow(false);
+				hideRouteButton->setAvailability(false);
+				showRouteButton->setAvailability(true);
+			}
+			else{
+				selectedRoute->setShow(true);
+				hideRouteButton->setAvailability(true);
+				showRouteButton->setAvailability(false);
+			}
 		}
 		else if (window.button() & 1 and finishRouteButton->isAvailable() and imageContains(mapX, mapY, map, window.mouse_x(), window.mouse_y())) {
 			X = window.mouse_x();
@@ -188,17 +201,27 @@ void Map::displayMap() {
 			routes.getLastElement()->addVertice(X, Y);
 		}
 		else if (window.button() & 1 and isRouteSelected(window.mouse_x(), window.mouse_y())) {
+			selectedRoute = getSelectedRoute();
 			addRouteButton->setAvailability(false);
 			loadRouteButton->setAvailability(false);
 			saveRoutesButton->setAvailability(false);
-			deleteRouteButton->setAvailability(true);
-			hideRouteButton->setAvailability(true);
 			cancelSelectionButton->setAvailability(true);
-			selectedRoute = getSelectedRoute();
+
+			if (selectedRoute->getSelectedVertice()) {
+				deleteVerticeButton->setAvailability(true);
+				deleteRouteButton->setAvailability(false);
+				hideRouteButton->setAvailability(false); showRouteButton->setAvailability(false);
+			}
+			else {
+				deleteRouteButton->setAvailability(true);
+				deleteVerticeButton->setAvailability(false);
+				selectedRoute->isShowing() ? hideRouteButton->setAvailability(true) : showRouteButton->setAvailability(true);
+			}
 		}
 		else if (window.is_keyT()) {
 			routes.toString();
 		}
+		//Draw Section
 		background.draw_image(backgroundImage);
 		background.draw_image(mapX, mapY, map);
 		drawRoutes(background);

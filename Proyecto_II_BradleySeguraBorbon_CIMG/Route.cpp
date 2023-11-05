@@ -37,6 +37,10 @@ bool Route::selected() {
 	return isSelected;
 }
 
+Vertice* Route::getSelectedVertice() {
+	return selectedVertice;
+}
+
 void Route::setName(string _name) {
 	name = _name;
 }
@@ -53,6 +57,10 @@ void Route::setSelection(bool selection) {
 	isSelected = selection;
 }
 
+void Route::setSelectedVertice(Vertice* selectedVertice) {
+	this->selectedVertice = selectedVertice;
+}
+
 void Route::addVertice(float x, float y) {
 	Vertice* newVertice = new Vertice(x, y);
 	vertices.pushBack(newVertice);
@@ -63,21 +71,26 @@ void Route::draw(CImg<unsigned char>& window) {
 	unsigned char white[3] = { 255, 255, 255 };
 	Node<Vertice>* currentVertice = vertices.getHeadNode();
 	if (!currentVertice) return;
-	if (isSelected) {
+	/*if (selectedVertice) {
+		selectedVertice->draw(window, color, isSelected);
+	}*/
+	currentVertice->data->draw(window, color, isSelected and !selectedVertice);
+	/*if (isSelected and !selectedVertice) {
 		window.draw_circle(currentVertice->data->getX(), currentVertice->data->getY(), 8, color);
 		window.draw_circle(currentVertice->data->getX(), currentVertice->data->getY(), 4, white);
 	}
 	else
-		window.draw_circle(currentVertice->data->getX(), currentVertice->data->getY(), 3, color);
+		window.draw_circle(currentVertice->data->getX(), currentVertice->data->getY(), 3, color);*/
 
 	while (currentVertice->next && show) {
 		window.draw_line(currentVertice->data->getX(), currentVertice->data->getY(), currentVertice->next->data->getX(), currentVertice->next->data->getY(), color);
-		if (isSelected) {
+		currentVertice->next->data->draw(window, color, isSelected and !selectedVertice);
+		/*if (isSelected and !selectedVertice) {
 			window.draw_circle(currentVertice->next->data->getX(), currentVertice->next->data->getY(), 8, color);
 			window.draw_circle(currentVertice->next->data->getX(), currentVertice->next->data->getY(), 4, white);
 		}
 		else
-			window.draw_circle(currentVertice->next->data->getX(), currentVertice->next->data->getY(), 3, color);
+			window.draw_circle(currentVertice->next->data->getX(), currentVertice->next->data->getY(), 3, color);*/
 		currentVertice = currentVertice->next;
 	}
 }
@@ -131,7 +144,12 @@ bool Route::contains(float x, float y) {
 	Node<Vertice>* currentVertice = vertices.getHeadNode();
 	while (currentVertice) {
 		if (currentVertice->data->contains(x, y)) {
-			isSelected ? isSelected = false : isSelected = true;
+			if (isSelected) {
+				currentVertice->data->setSelection(true);
+				selectedVertice = currentVertice->data;
+			}
+			else
+				isSelected = true;
 			return true;
 		}
 		currentVertice = currentVertice->next;
