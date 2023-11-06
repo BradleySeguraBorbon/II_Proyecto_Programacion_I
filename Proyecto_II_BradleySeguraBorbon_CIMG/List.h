@@ -109,4 +109,13 @@ public:
 			currentNode = currentNode->next;
 		}
 	}
+	int getSize() {
+		int size = 0;
+		Node<T>* currentNode = head;
+		while (currentNode) {
+			size++;
+			currentNode = currentNode->next;
+		}
+		return size;
+	}
 };

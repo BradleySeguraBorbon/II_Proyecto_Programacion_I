@@ -22,9 +22,10 @@ public:
 	Route() {
 		color = new unsigned char[3];
 		show = true;
+		isSelected = false;
 		selectedVertice = nullptr;
 	}
-	Route(string _name, unsigned char* _color) : name(_name), color(_color), show(true), selectedVertice(nullptr) {}
+	Route(string _name, unsigned char* _color) : name(_name), color(_color), show(true), isSelected(false), selectedVertice(nullptr) {}
 	Route(const Route& otherRoute) {
 		vertices = otherRoute.vertices;
 		name = otherRoute.name;

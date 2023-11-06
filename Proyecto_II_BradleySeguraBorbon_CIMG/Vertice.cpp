@@ -25,7 +25,7 @@ bool Vertice::selected() {
 }
 
 bool Vertice::contains(float x2, float y2) {
-	return distance(x2, y2) < 10;
+	return distance(x2, y2) < 8;
 }
 
 float Vertice::distance(float x2, float y2) {
@@ -42,9 +42,9 @@ void Vertice::draw(CImg<unsigned char>& background, unsigned char* color, bool d
 		background.draw_circle(x, y, 4, white);
 	}
 	else
-		background.draw_circle(x, y, 3, color);
+		background.draw_circle(x, y, 4, color);
 }
 
 void Vertice::toString() {
-	cout << x << ", " << y;
+	cout << x << ", " << y << endl;
 }

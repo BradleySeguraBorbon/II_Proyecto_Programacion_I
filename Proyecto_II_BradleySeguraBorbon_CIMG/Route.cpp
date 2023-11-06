@@ -92,7 +92,9 @@ void Route::draw(CImg<unsigned char>& window) {
 		window.draw_circle(currentVertice->data->getX(), currentVertice->data->getY(), 3, color);*/
 
 	while (currentVertice->next && show) {
-		window.draw_line(currentVertice->data->getX(), currentVertice->data->getY(), currentVertice->next->data->getX(), currentVertice->next->data->getY(), color);
+		window.draw_line(currentVertice->data->getX() + 0.01, currentVertice->data->getY() + 0.01, currentVertice->next->data->getX() + 0.01, currentVertice->next->data->getY() + 0.01, color);
+		window.draw_line(currentVertice->data->getX() + 0.01, currentVertice->data->getY() + 0.01, currentVertice->next->data->getX() + 0.01, currentVertice->next->data->getY() + 0.01, color);
+		window.draw_line(currentVertice->data->getX() + 0.01, currentVertice->data->getY() + 0.01, currentVertice->next->data->getX() + 0.01, currentVertice->next->data->getY() + 0.01, color);
 		currentVertice->next->data->draw(window, color, isSelected and !selectedVertice);
 		/*if (isSelected and !selectedVertice) {
 			window.draw_circle(currentVertice->next->data->getX(), currentVertice->next->data->getY(), 8, color);
@@ -126,6 +128,7 @@ void Route::loadRoute(string routeName) {
 	int i = 0, commaPosition;
 	file.open(routeName + ".txt", ios::in);
 	if (file.is_open()) {
+		name = routeName;
 		getline(file, currentLine);
 		while (i < 3) {
 			commaPosition = (i != 2 ?  currentLine.find(',') : currentLine.length()); 
@@ -157,8 +160,6 @@ bool Route::contains(float x, float y) {
 				currentVertice->data->setSelection(true);
 				selectedVertice = currentVertice->data;
 			}
-			else
-				isSelected = true;
 			return true;
 		}
 		currentVertice = currentVertice->next;
@@ -167,6 +168,8 @@ bool Route::contains(float x, float y) {
 }
 
 void Route::toString() {
+	cout << " --------------------------------------------------------------------" << endl;
 	cout << "ROUTE NAME: " << name << endl;
 	vertices.toString();
+	cout << endl;
 }
