@@ -80,76 +80,65 @@ void Route::draw(CImg<unsigned char>& window) {
 	unsigned char white[3] = { 255, 255, 255 };
 	Node<Vertice>* currentVertice = vertices.getHeadNode();
 	if (!currentVertice) return;
-	/*if (selectedVertice) {
-		selectedVertice->draw(window, color, isSelected);
-	}*/
 	currentVertice->data->draw(window, color, isSelected and !selectedVertice);
-	/*if (isSelected and !selectedVertice) {
-		window.draw_circle(currentVertice->data->getX(), currentVertice->data->getY(), 8, color);
-		window.draw_circle(currentVertice->data->getX(), currentVertice->data->getY(), 4, white);
-	}
-	else
-		window.draw_circle(currentVertice->data->getX(), currentVertice->data->getY(), 3, color);*/
-
 	while (currentVertice->next && show) {
-		window.draw_line(currentVertice->data->getX() + 0.01, currentVertice->data->getY() + 0.01, currentVertice->next->data->getX() + 0.01, currentVertice->next->data->getY() + 0.01, color);
-		window.draw_line(currentVertice->data->getX() + 0.01, currentVertice->data->getY() + 0.01, currentVertice->next->data->getX() + 0.01, currentVertice->next->data->getY() + 0.01, color);
-		window.draw_line(currentVertice->data->getX() + 0.01, currentVertice->data->getY() + 0.01, currentVertice->next->data->getX() + 0.01, currentVertice->next->data->getY() + 0.01, color);
+		window.draw_line(currentVertice->data->getX(), currentVertice->data->getY(), currentVertice->next->data->getX(), currentVertice->next->data->getY(), color);
+		window.draw_line(currentVertice->data->getX() + 0.001, currentVertice->data->getY() + 0.001, currentVertice->next->data->getX() + 0.001, currentVertice->next->data->getY() + 0.001, color);
+		currentVertice = currentVertice->next;
+	}
+	currentVertice = vertices.getHeadNode();
+	while (currentVertice->next && show) {
 		currentVertice->next->data->draw(window, color, isSelected and !selectedVertice);
-		/*if (isSelected and !selectedVertice) {
-			window.draw_circle(currentVertice->next->data->getX(), currentVertice->next->data->getY(), 8, color);
-			window.draw_circle(currentVertice->next->data->getX(), currentVertice->next->data->getY(), 4, white);
-		}
-		else
-			window.draw_circle(currentVertice->next->data->getX(), currentVertice->next->data->getY(), 3, color);*/
 		currentVertice = currentVertice->next;
 	}
 }
 
-void Route::saveRoute() {
-	file.open(name + ".txt", ios::out);
-	if (file.is_open()) {
-		file << to_string(color[0]) << "," << to_string(color[1]) << "," << to_string(color[2]) << endl;
-		Node<Vertice>* currentVertice = vertices.getHeadNode();
-		while (currentVertice) {
-			file << currentVertice->data->getX() << "," << currentVertice->data->getY() << endl;
-			currentVertice = currentVertice->next;
-		}
-		file.close();
+void Route::saveRoute(fstream& file) {
+	file << "Name: " << name << endl;
+	file << "Color: " << to_string(color[0]) << "," << to_string(color[1]) << "," << to_string(color[2]) << endl;
+	Node<Vertice>* currentVertice = vertices.getHeadNode();
+	while (currentVertice) {
+		file << currentVertice->data->getX() << "," << currentVertice->data->getY() << ";" << endl;
+		currentVertice = currentVertice->next;
 	}
-	else
-		cout << "ERROOOR";
 }
 
-void Route::loadRoute(string routeName) {
-	string currentLine, substring;
+void Route::loadRoute(string routeData) {
+	string colorsLine, substring;
 	Vertice* newVertice = nullptr;
 	float x, y;
-	int i = 0, commaPosition;
-	file.open(routeName + ".txt", ios::in);
-	if (file.is_open()) {
-		name = routeName;
-		getline(file, currentLine);
-		while (i < 3) {
-			commaPosition = (i != 2 ?  currentLine.find(',') : currentLine.length()); 
-			substring = currentLine.substr(0, commaPosition);
-			color[i] = static_cast<unsigned char>(stoi(substring));
-			if(i != 2) currentLine = currentLine.substr(commaPosition + 1, currentLine.length());
-			i++;
-		}
-		while (getline(file, currentLine)) {
-			commaPosition = currentLine.find(',');
-			x = stof(currentLine.substr(0, commaPosition));
-			y = stof(currentLine.substr(commaPosition + 1, currentLine.length()));
-			newVertice = new Vertice(x, y);
-			vertices.pushBack(newVertice);
-			newVertice = nullptr;
-		}
-		file.close();
+	int i = 0;
+
+	int pos = routeData.find(' ');
+	int endOfLine = routeData.find('\n');
+	name = routeData.substr(pos + 1, endOfLine);
+	routeData.erase(0, endOfLine + 1);
+	cout << "This is the name: " << name << endl;
+	cout << "This is the rest of the string: " << routeData << endl;
+
+	pos = routeData.find(' ');
+	endOfLine = routeData.find('\n');
+	colorsLine = routeData.substr(pos + 1, endOfLine);
+	routeData.erase(0, endOfLine + 1);
+
+	while (i < 3) {
+		pos = (i != 2 ?  colorsLine.find(',') : colorsLine.length()); 
+		substring = colorsLine.substr(0, pos);
+		color[i] = static_cast<unsigned char>(stoi(substring));
+		colorsLine.erase(0, pos + 1);
+		i++;
 	}
-	else
-		cout << "ERROOOR";
-	cout << x << "," << y << endl;
+
+	while (routeData != "") {
+		pos = routeData.find(',');
+		endOfLine = routeData.find('\n');
+		x = stof(routeData.substr(0, pos));
+		y = stof(routeData.substr(pos + 1, endOfLine));
+		newVertice = new Vertice(x, y);
+		vertices.pushBack(newVertice);
+		newVertice = nullptr;
+		routeData.erase(0, endOfLine + 1);
+	}
 }
 
 bool Route::contains(float x, float y) {

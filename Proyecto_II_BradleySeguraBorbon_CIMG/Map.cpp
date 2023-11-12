@@ -50,13 +50,13 @@ void Map::drawRoutes(CImg<unsigned char>& window) {
 	}
 }
 
-void Map::saveRoutes() {
-	Node<Route>* currentNode = routes.getHeadNode();
-	while (currentNode) {
-		currentNode->data->saveRoute();
-		currentNode = currentNode->next;
-	}
-}
+//void Map::saveRoutes() {
+//	Node<Route>* currentNode = routes.getHeadNode();
+//	while (currentNode) {
+//		currentNode->data->saveRoute();
+//		currentNode = currentNode->next;
+//	}
+//}
 
 unsigned char* Map::selectColor(CImgDisplay& window, CImg<unsigned char>& background) {
 	unsigned char* colors[7] = { red, yellow, cian, orange, purple, pink, blue };
@@ -69,10 +69,8 @@ unsigned char* Map::selectColor(CImgDisplay& window, CImg<unsigned char>& backgr
 		if (window.button() & 1 and colorsButton->contains(mouseX, mouseY)) {
 			cout << "Pressed colorsButton" << endl;
 			while (i <= 7) {
-				if (mouseX < colorsButton->getX() + blockSize * i) {
-					cout << "Returned a unsigned char ptr" << endl;
+				if (mouseX < colorsButton->getX() + blockSize * i)
 					return colors[i - 1];
-				}
 				i++;
 			}
 		}
@@ -101,6 +99,55 @@ Route* Map::getSelectedRoute() {
 		}
 		currentRoute = currentRoute->next;
 	}
+}
+
+void Map::saveRoutes() {
+	file.open("routes.txt", ios::out);
+	try {
+		if (file.is_open()) {
+			Node<Route>* currentRoute = routes.getHeadNode();
+			while (currentRoute) {
+				currentRoute->data->saveRoute(file);
+				file << "================================================" << endl;
+				currentRoute = currentRoute->next;
+			}
+		}
+		else { throw("error"); }
+	}
+	catch (string error) {
+		cout << error << " --- File Couldn't Open ---" << endl;
+		exit(1);
+	}
+	file.close();
+}
+
+void Map::loadRoutes() {
+	Route* newRoute = nullptr;
+	string currentRoute = "", currentline;
+	file.open("routes.txt", ios::in);
+	try {
+		if (file.is_open()) {
+			while (getline(file, currentline)) {
+				if (currentline[0] == '=') {
+					newRoute = new Route();
+					newRoute->loadRoute(currentRoute);
+					routes.pushBack(newRoute);
+					newRoute = nullptr;
+					currentRoute = "";
+					continue;
+				}
+				currentline += '\n';
+				currentRoute += currentline;
+			}
+		}
+		else
+			throw("routes.txt");
+	}
+	catch (string fileName) {
+		cout << "Error: " << fileName << "couldn't open\n";
+		exit(1);
+	}
+	file.close();
 }
 
 void Map::displayMap() {
@@ -163,13 +210,8 @@ void Map::displayMap() {
 			saveRoutes();
 		}
 		else if (loadRouteButton->isAvailable() and window.button() & 1 and loadRouteButton->contains(window.mouse_x(), window.mouse_y())) {
-			cout << "-- LOAD ROUTE BUTTON PRESSED --" << endl;
-			string routeName;
-			cout << "Enter the route name: ";
-			cin >> routeName;
-			Route* newRoute = new Route();
-			newRoute->loadRoute(routeName);
-			routes.pushBack(newRoute);
+			cout << "-- LOAD ROUTES BUTTON PRESSED --" << endl;
+			loadRoutes();
 		}
 		else if (deleteRouteButton->isAvailable() and window.button() & 1 and deleteRouteButton->contains(window.mouse_x(), window.mouse_y())) {
 			cout << "-- DELETE ROUTE BUTTON PRESSED --" << endl;
@@ -261,8 +303,8 @@ void Map::displayMap() {
 		background.draw_image(mapX, mapY, map);
 		drawRoutes(background);
 		if (selectedRoute) {
-			background.draw_text(32, 680, "SELECTED ROUTE", red, 1.0, 80);
-			background.draw_text(32, 700, selectedRoute->getName().c_str(), red, 1.0, 80);
+			background.draw_text(32, 680, "SELECTED ROUTE: ", red, 255, 1.0, 30);
+			background.draw_text(32, 700, selectedRoute->getName().c_str(), red, 255, 1.0, 30);
 		}
 		Node<Button>* currentButton= buttons.getHeadNode();
 		while (currentButton) {

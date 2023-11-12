@@ -20,6 +20,7 @@ class Route {
 
 public:
 	Route() {
+		name = "";
 		color = new unsigned char[3];
 		show = true;
 		isSelected = false;
@@ -37,7 +38,7 @@ public:
 	fstream& getFile();
 	Vertice* getFirstVertice();
 	bool isShowing();
-	bool selected();
+	bool selected(); 
 	Vertice* getSelectedVertice();
 	void setName(string _name);
 	void setColor(unsigned char* _color);
@@ -46,8 +47,8 @@ public:
 	void setSelectedVertice(Vertice* selectedVertice);
 	void addVertice(float x, float y);
 	void deleteSelectedVertice();
-	void saveRoute();
-	void loadRoute(string routeName);
+	void saveRoute(fstream& file);
+	void loadRoute(string routeData);
 	//Path* operator[](int path);
 	void draw(CImg<unsigned char>& window);
 	bool contains(float x, float y);
