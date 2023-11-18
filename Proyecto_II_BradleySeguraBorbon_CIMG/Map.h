@@ -27,7 +27,6 @@ class Map {
 	Button* deleteVerticeButton;
 	Button* colorsButton;
 	Route* selectedRoute;
-	bool addingRoute, editingRoute;
 	fstream file;
 
 	unsigned char red[3] = { 255, 1, 1 }, blue[3] = { 1, 1, 255 }, green[3] = { 1, 255, 1 }, yellow[3] = { 255, 255, 0 }, cian[3] = { 0, 255, 255 },
@@ -37,6 +36,11 @@ public:
 	Map();
 	~Map() {}
 	void displayMap();
+	void manageRouteAdding(CImgDisplay& window, CImg<unsigned char>& background);
+	void deleteSelectedRoute();
+	void cancelSelection();
+	void manageRouteVisibility();
+	void deleteSelectedVertice();
 	bool imageContains(float imageX, float imageY, CImg<unsigned char>&, float mouseX, float mouseY);
 	bool isClicking(float mouseX, float mouseY, Button& buttonPressed);
 	void drawRoutes(CImg<unsigned char>& window);

@@ -27,7 +27,6 @@ Map::Map() {
 	deleteVerticeButton = new Button(deleteVerticeImage, 32, 100, false);
 	colorsButton = new Button(colorsImage, 594, 670, false);
 
-	addingRoute = editingRoute = false;
 	selectedRoute = nullptr;
 
 }
@@ -142,6 +141,34 @@ void Map::loadRoutes() {
 	file.close();
 }
 
+void Map::manageRouteAdding(CImgDisplay& window, CImg<unsigned char>& background) {
+	string name;
+	unsigned char* color = nullptr;
+	if (finishRouteButton->isAvailable()) {
+		cout << "-- FINISH ROUTE BUTTON PRESSED --" << endl;
+		addRouteButton->setAvailability(true);
+		finishRouteButton->setAvailability(false);
+		saveRoutesButton->setAvailability(true);
+		loadRouteButton->setAvailability(true);
+	}
+	else {
+		cout << "-- ADD ROUTE BUTTON PRESSED --" << endl;
+		addRouteButton->setAvailability(false);
+		finishRouteButton->setAvailability(true);
+		saveRoutesButton->setAvailability(false);
+		loadRouteButton->setAvailability(false);
+		//HWND consoleWindow = GetConsoleWindow();
+		//ShowWindow(consoleWindow, SW_MAXIMIZE);
+		cout << "Ingrese el nombre de la nueva ruta: ";
+		cin >> name;
+		//ShowWindow(consoleWindow, SW_MINIMIZE);
+		color = selectColor(window, background);
+		Route* newRoute = new Route(name, color);
+		routes.pushBack(newRoute);
+		newRoute = nullptr;
+	}
+}
+
 void Map::displayMap() {
 	const int windowWidth = 1920, windowHeight = 1080;
 	CImgDisplay window(windowWidth, windowHeight, "MAP");
@@ -149,10 +176,9 @@ void Map::displayMap() {
 	CImg<unsigned char> backgroundImage("Resources/background.jpg");
 	backgroundImage.resize(1540, 790);
 
-	const int mapX = (1540 - map.width()), mapY = 0;
+	const int mapXPosition = (1540 - map.width()), mapYPosition = 0;
 
 	float X, Y;
-	addingRoute = editingRoute = false;
 	List<Button> buttons;
 	buttons.pushBack(addRouteButton);
 	buttons.pushBack(finishRouteButton);
@@ -164,48 +190,22 @@ void Map::displayMap() {
 	buttons.pushBack(cancelSelectionButton);
 	buttons.pushBack(deleteVerticeButton);
 
-	string name;
-	unsigned char* color = nullptr;
 	bool firstVertice;
 
 	while (!window.is_closed()) {
 		window.wait();
-		//if (window.button() & 1) cout << window.mouse_x() << ", " << window.mouse_y() << endl;
 		if ((addRouteButton->isAvailable() || finishRouteButton->isAvailable()) and addRouteButton->contains(window.mouse_x(), window.mouse_y()) and window.button() & 1) {
-			cout << "BUTTON PRESSED" << endl;
-			if (finishRouteButton->isAvailable()) {
-				cout << "-- FINISH ROUTE BUTTON PRESSED --" << endl;
-				addRouteButton->setAvailability(true);
-				finishRouteButton->setAvailability(false);
-				saveRoutesButton->setAvailability(true);
-				loadRouteButton->setAvailability(true);
-			}
-			else {
-				cout << "-- ADD ROUTE BUTTON PRESSED --" << endl;
-				addRouteButton->setAvailability(false);
-				finishRouteButton->setAvailability(true);
-				saveRoutesButton->setAvailability(false);
-				loadRouteButton->setAvailability(false);
-				//HWND consoleWindow = GetConsoleWindow();
-				//ShowWindow(consoleWindow, SW_MAXIMIZE);
-				cout << "Ingrese el nombre de la nueva ruta: ";
-				cin >> name;
-				//ShowWindow(consoleWindow, SW_MINIMIZE);
-				color = selectColor(window, background);
-				Route* newRoute = new Route(name, color);
-				routes.pushBack(newRoute);
-				newRoute = nullptr;
-			}
+			manageRouteAdding(window, background);
 		}
-		else if (saveRoutesButton->isAvailable() and window.button() & 1 and saveRoutesButton->contains(window.mouse_x(), window.mouse_y())) {
+		if (saveRoutesButton->isAvailable() and window.button() & 1 and saveRoutesButton->contains(window.mouse_x(), window.mouse_y())) {
 			cout << "-- SAVE ROUTES BUTTON PRESSED --" << endl;
 			saveRoutes();
 		}
-		else if (loadRouteButton->isAvailable() and window.button() & 1 and loadRouteButton->contains(window.mouse_x(), window.mouse_y())) {
+		if (loadRouteButton->isAvailable() and window.button() & 1 and loadRouteButton->contains(window.mouse_x(), window.mouse_y())) {
 			cout << "-- LOAD ROUTES BUTTON PRESSED --" << endl;
 			loadRoutes();
 		}
-		else if (deleteRouteButton->isAvailable() and window.button() & 1 and deleteRouteButton->contains(window.mouse_x(), window.mouse_y())) {
+		if (deleteRouteButton->isAvailable() and window.button() & 1 and deleteRouteButton->contains(window.mouse_x(), window.mouse_y())) {
 			cout << "-- DELETE ROUTE BUTTON PRESSED --" << endl;
 			selectedRoute = getSelectedRoute();
 			routes.deleteElement(selectedRoute);
@@ -260,7 +260,7 @@ void Map::displayMap() {
 			hideRouteButton->setAvailability(true);
 			cancelSelectionButton->setAvailability(true);
 		}
-		else if (window.button() & 1 and finishRouteButton->isAvailable() and imageContains(mapX, mapY, map, window.mouse_x(), window.mouse_y())) {
+		else if (window.button() & 1 and finishRouteButton->isAvailable() and imageContains(mapXPosition, mapYPosition, map, window.mouse_x(), window.mouse_y())) {
 			X = window.mouse_x();
 			Y = window.mouse_y();
 			routes.getLastElement()->addVertice(X, Y);
@@ -292,7 +292,7 @@ void Map::displayMap() {
 		}
 		//Draw Section
 		background.draw_image(backgroundImage);
-		background.draw_image(mapX, mapY, map);
+		background.draw_image(mapXPosition, mapYPosition, map);
 		drawRoutes(background);
 		if (selectedRoute) {
 			background.draw_text(32, 680, "SELECTED ROUTE: ", red, 255, 1.0, 30);
