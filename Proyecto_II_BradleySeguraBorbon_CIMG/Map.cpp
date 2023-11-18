@@ -182,6 +182,28 @@ void Map::deleteSelectedRoute() {
 	selectedRoute = nullptr;
 }
 
+void Map::cancelSelection() {
+	cout << "-- CANCEL SELECTION BUTTON PRESSED --" << endl;
+	if (selectedRoute->getSelectedVertice()) {
+		deleteVerticeButton->setAvailability(false);
+		deleteRouteButton->setAvailability(true);
+		hideRouteButton->setAvailability(true);
+		cancelSelectionButton->setAvailability(true);
+		selectedRoute->setSelectedVertice(nullptr);
+	}
+	else {
+		addRouteButton->setAvailability(true);
+		loadRouteButton->setAvailability(true);
+		saveRoutesButton->setAvailability(true);
+		deleteRouteButton->setAvailability(false);
+		hideRouteButton->setAvailability(false);
+		showRouteButton->setAvailability(false);
+		cancelSelectionButton->setAvailability(false);
+		selectedRoute->setSelection(false);
+		selectedRoute = nullptr;
+	}
+}
+
 void Map::displayMap() {
 	const int windowWidth = 1920, windowHeight = 1080;
 	CImgDisplay window(windowWidth, windowHeight, "MAP");
@@ -222,25 +244,7 @@ void Map::displayMap() {
 			deleteSelectedRoute();
 		}
 		else if (cancelSelectionButton->isAvailable() and cancelSelectionButton->contains(window.mouse_x(), window.mouse_y()) and window.button() & 1) {
-			cout << "-- CANCEL SELECTION BUTTON PRESSED --" << endl;
-			if (selectedRoute->getSelectedVertice()) {
-				deleteVerticeButton->setAvailability(false);
-				deleteRouteButton->setAvailability(true);
-				hideRouteButton->setAvailability(true);
-				cancelSelectionButton->setAvailability(true);
-				selectedRoute->setSelectedVertice(nullptr);
-			}
-			else {
-				addRouteButton->setAvailability(true);
-				loadRouteButton->setAvailability(true);
-				saveRoutesButton->setAvailability(true);
-				deleteRouteButton->setAvailability(false);
-				hideRouteButton->setAvailability(false);
-				showRouteButton->setAvailability(false);
-				cancelSelectionButton->setAvailability(false);
-				selectedRoute->setSelection(false);
-				selectedRoute = nullptr;
-			}
+			cancelSelection();
 		}
 		else if ((showRouteButton->isAvailable() || hideRouteButton->isAvailable()) and showRouteButton->contains(window.mouse_x(), window.mouse_y()) and window.button() & 1) {
 			if (selectedRoute->isShowing()) {
