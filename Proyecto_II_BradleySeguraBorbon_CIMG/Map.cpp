@@ -169,6 +169,19 @@ void Map::manageRouteAdding(CImgDisplay& window, CImg<unsigned char>& background
 	}
 }
 
+void Map::deleteSelectedRoute() {
+	cout << "-- DELETE ROUTE BUTTON PRESSED --" << endl;
+	selectedRoute = getSelectedRoute();
+	routes.deleteElement(selectedRoute);
+	addRouteButton->setAvailability(true);
+	loadRouteButton->setAvailability(true);
+	saveRoutesButton->setAvailability(true);
+	deleteRouteButton->setAvailability(false);
+	hideRouteButton->setAvailability(false);
+	cancelSelectionButton->setAvailability(false);
+	selectedRoute = nullptr;
+}
+
 void Map::displayMap() {
 	const int windowWidth = 1920, windowHeight = 1080;
 	CImgDisplay window(windowWidth, windowHeight, "MAP");
@@ -206,16 +219,7 @@ void Map::displayMap() {
 			loadRoutes();
 		}
 		if (deleteRouteButton->isAvailable() and window.button() & 1 and deleteRouteButton->contains(window.mouse_x(), window.mouse_y())) {
-			cout << "-- DELETE ROUTE BUTTON PRESSED --" << endl;
-			selectedRoute = getSelectedRoute();
-			routes.deleteElement(selectedRoute);
-			addRouteButton->setAvailability(true);
-			loadRouteButton->setAvailability(true);
-			saveRoutesButton->setAvailability(true);
-			deleteRouteButton->setAvailability(false);
-			hideRouteButton->setAvailability(false);
-			cancelSelectionButton->setAvailability(false);
-			selectedRoute = nullptr;
+			deleteSelectedRoute();
 		}
 		else if (cancelSelectionButton->isAvailable() and cancelSelectionButton->contains(window.mouse_x(), window.mouse_y()) and window.button() & 1) {
 			cout << "-- CANCEL SELECTION BUTTON PRESSED --" << endl;
