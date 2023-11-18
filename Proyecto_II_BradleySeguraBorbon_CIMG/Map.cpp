@@ -50,14 +50,6 @@ void Map::drawRoutes(CImg<unsigned char>& window) {
 	}
 }
 
-//void Map::saveRoutes() {
-//	Node<Route>* currentNode = routes.getHeadNode();
-//	while (currentNode) {
-//		currentNode->data->saveRoute();
-//		currentNode = currentNode->next;
-//	}
-//}
-
 unsigned char* Map::selectColor(CImgDisplay& window, CImg<unsigned char>& background) {
 	unsigned char* colors[7] = { red, yellow, cian, orange, purple, pink, blue };
 	float blockSize = colorsButton->getButtonImage()->width() / 7.0;
@@ -125,6 +117,7 @@ void Map::loadRoutes() {
 	Route* newRoute = nullptr;
 	string currentRoute = "", currentline;
 	file.open("routes.txt", ios::in);
+	int limits = 0;
 	try {
 		if (file.is_open()) {
 			while (getline(file, currentline)) {
@@ -136,8 +129,7 @@ void Map::loadRoutes() {
 					currentRoute = "";
 					continue;
 				}
-				currentline += '\n';
-				currentRoute += currentline;
+				currentRoute += (currentline += '\n');
 			}
 		}
 		else
@@ -194,8 +186,8 @@ void Map::displayMap() {
 				finishRouteButton->setAvailability(true);
 				saveRoutesButton->setAvailability(false);
 				loadRouteButton->setAvailability(false);
-				/*HWND consoleWindow = GetConsoleWindow();
-				ShowWindow(consoleWindow, SW_MAXIMIZE);*/
+				//HWND consoleWindow = GetConsoleWindow();
+				//ShowWindow(consoleWindow, SW_MAXIMIZE);
 				cout << "Ingrese el nombre de la nueva ruta: ";
 				cin >> name;
 				//ShowWindow(consoleWindow, SW_MINIMIZE);

@@ -98,27 +98,26 @@ void Route::saveRoute(fstream& file) {
 	file << "Color: " << to_string(color[0]) << "," << to_string(color[1]) << "," << to_string(color[2]) << endl;
 	Node<Vertice>* currentVertice = vertices.getHeadNode();
 	while (currentVertice) {
-		file << currentVertice->data->getX() << "," << currentVertice->data->getY() << ";" << endl;
+		file << currentVertice->data->getX() << "," << currentVertice->data->getY() << endl;
 		currentVertice = currentVertice->next;
 	}
 }
 
 void Route::loadRoute(string routeData) {
+	cout << "ROUTE DATA -- " << endl << routeData << endl;
 	string colorsLine, substring;
 	Vertice* newVertice = nullptr;
 	float x, y;
-	int i = 0;
-
-	int pos = routeData.find(' ');
-	int endOfLine = routeData.find('\n');
-	name = routeData.substr(pos + 1, endOfLine);
-	routeData.erase(0, endOfLine + 1);
-	cout << "This is the name: " << name << endl;
-	cout << "This is the rest of the string: " << routeData << endl;
+	int i = 0, pos, endOfLine;
 
 	pos = routeData.find(' ');
 	endOfLine = routeData.find('\n');
-	colorsLine = routeData.substr(pos + 1, endOfLine);
+	name = routeData.substr(pos + 1, endOfLine - (pos + 1));
+	routeData.erase(0, endOfLine + 1);
+
+	pos = routeData.find(' ');
+	endOfLine = routeData.find('\n');
+	colorsLine = routeData.substr(pos + 1, endOfLine - (pos + 1));
 	routeData.erase(0, endOfLine + 1);
 
 	while (i < 3) {
