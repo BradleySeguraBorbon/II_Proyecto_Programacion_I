@@ -204,6 +204,21 @@ void Map::cancelSelection() {
 	}
 }
 
+void Map::manageRouteVisibility() {
+	if (selectedRoute->isShowing()) {
+		cout << "-- HIDE ROUTE BUTTON PRESSED --" << endl;
+		selectedRoute->setShow(false);
+		hideRouteButton->setAvailability(false);
+		showRouteButton->setAvailability(true);
+	}
+	else {
+		cout << "-- SHOW ROUTE BUTTON PRESSED --" << endl;
+		selectedRoute->setShow(true);
+		hideRouteButton->setAvailability(true);
+		showRouteButton->setAvailability(false);
+	}
+}
+
 void Map::displayMap() {
 	const int windowWidth = 1920, windowHeight = 1080;
 	CImgDisplay window(windowWidth, windowHeight, "MAP");
@@ -247,18 +262,7 @@ void Map::displayMap() {
 			cancelSelection();
 		}
 		else if ((showRouteButton->isAvailable() || hideRouteButton->isAvailable()) and showRouteButton->contains(window.mouse_x(), window.mouse_y()) and window.button() & 1) {
-			if (selectedRoute->isShowing()) {
-				cout << "-- HIDE ROUTE BUTTON PRESSED --" << endl;
-				selectedRoute->setShow(false);
-				hideRouteButton->setAvailability(false);
-				showRouteButton->setAvailability(true);
-			}
-			else {
-				cout << "-- SHOW ROUTE BUTTON PRESSED --" << endl;
-				selectedRoute->setShow(true);
-				hideRouteButton->setAvailability(true);
-				showRouteButton->setAvailability(false);
-			}
+			manageRouteVisibility();
 		}
 		else if (deleteVerticeButton->isAvailable() and deleteVerticeButton->contains(window.mouse_x(), window.mouse_y()) and window.button() & 1) {
 			cout << "-- DELETE VERTICE BUTTON PRESSED --" << endl;
