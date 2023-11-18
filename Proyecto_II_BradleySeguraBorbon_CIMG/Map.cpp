@@ -219,6 +219,15 @@ void Map::manageRouteVisibility() {
 	}
 }
 
+void Map::deleteSelectedVertice() {
+	cout << "-- DELETE VERTICE BUTTON PRESSED --" << endl;
+	selectedRoute->deleteSelectedVertice();
+	deleteVerticeButton->setAvailability(false);
+	deleteRouteButton->setAvailability(true);
+	hideRouteButton->setAvailability(true);
+	cancelSelectionButton->setAvailability(true);
+}
+
 void Map::displayMap() {
 	const int windowWidth = 1920, windowHeight = 1080;
 	CImgDisplay window(windowWidth, windowHeight, "MAP");
@@ -247,15 +256,15 @@ void Map::displayMap() {
 		if ((addRouteButton->isAvailable() || finishRouteButton->isAvailable()) and addRouteButton->contains(window.mouse_x(), window.mouse_y()) and window.button() & 1) {
 			manageRouteAdding(window, background);
 		}
-		if (saveRoutesButton->isAvailable() and window.button() & 1 and saveRoutesButton->contains(window.mouse_x(), window.mouse_y())) {
+		else if (saveRoutesButton->isAvailable() and window.button() & 1 and saveRoutesButton->contains(window.mouse_x(), window.mouse_y())) {
 			cout << "-- SAVE ROUTES BUTTON PRESSED --" << endl;
 			saveRoutes();
 		}
-		if (loadRouteButton->isAvailable() and window.button() & 1 and loadRouteButton->contains(window.mouse_x(), window.mouse_y())) {
+		else if (loadRouteButton->isAvailable() and window.button() & 1 and loadRouteButton->contains(window.mouse_x(), window.mouse_y())) {
 			cout << "-- LOAD ROUTES BUTTON PRESSED --" << endl;
 			loadRoutes();
 		}
-		if (deleteRouteButton->isAvailable() and window.button() & 1 and deleteRouteButton->contains(window.mouse_x(), window.mouse_y())) {
+		else if (deleteRouteButton->isAvailable() and window.button() & 1 and deleteRouteButton->contains(window.mouse_x(), window.mouse_y())) {
 			deleteSelectedRoute();
 		}
 		else if (cancelSelectionButton->isAvailable() and cancelSelectionButton->contains(window.mouse_x(), window.mouse_y()) and window.button() & 1) {
@@ -265,12 +274,7 @@ void Map::displayMap() {
 			manageRouteVisibility();
 		}
 		else if (deleteVerticeButton->isAvailable() and deleteVerticeButton->contains(window.mouse_x(), window.mouse_y()) and window.button() & 1) {
-			cout << "-- DELETE VERTICE BUTTON PRESSED --" << endl;
-			selectedRoute->deleteSelectedVertice();
-			deleteVerticeButton->setAvailability(false);
-			deleteRouteButton->setAvailability(true);
-			hideRouteButton->setAvailability(true);
-			cancelSelectionButton->setAvailability(true);
+			deleteSelectedVertice();
 		}
 		else if (window.button() & 1 and finishRouteButton->isAvailable() and imageContains(mapXPosition, mapYPosition, map, window.mouse_x(), window.mouse_y())) {
 			X = window.mouse_x();
