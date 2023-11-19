@@ -21,10 +21,6 @@ unsigned char* Route::getColor() {
 	return color;
 }
 
-fstream& Route::getFile() {
-	return file;
-}
-
 Vertice* Route::getFirstVertice() {
 	return vertices.getFirstElement();
 }

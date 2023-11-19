@@ -31,64 +31,24 @@ public:
 				head->previous = nullptr;
 			else 
 				back = nullptr; 
+			delete currentNode;
 		}
 		else {
 			while (currentNode) {
 				if (currentNode->data == value) {
 					currentNode->previous->next = currentNode->next;
-					if (currentNode->next) currentNode->next->previous = currentNode->previous;
-					else back = currentNode->previous;
+					if (currentNode->next) 
+						currentNode->next->previous = currentNode->previous;
+					else {
+						back = currentNode->previous;
+						back->next = nullptr;
+					}
+					delete currentNode;
+					return;
 				}
 				currentNode = currentNode->next;
 			}
 		}
-		delete currentNode;
-
-		/*
-		Node<T>* deletingNode = nullptr;
-		if (value == head->data) {
-			deletingNode = head;
-			if (head->next) {
-				head = head->next;
-				head->previous = nullptr;
-			}
-			delete deletingNode;
-			return;
-		}
-		Node<T>* currentNode = head;
-		while (currentNode) {
-			if (currentNode->data == value) {
-				deletingNode = currentNode;
-				currentNode->previous->next = currentNode->next;
-				if(currentNode->next)
-					currentNode->next->previous = currentNode->previous;
-				delete currentNode;
-				return;
-			}
-			currentNode = currentNode->next;
-		}*/
-
-		//optimizar
-	}
-	void show() {
-		Node<T>* currentNode = head;
-		cout << endl << endl;
-		while (currentNode) {
-			cout << currentNode->data << " ";
-			currentNode = currentNode->next;
-		}
-		cout << endl << endl;
-	}
-	T operator[](int position) {
-		Node<T>* currentNode = head;
-		int currentPosition = 0;
-		while (currentNode) {
-			if (currentPosition == position)
-				return currentNode->data;
-			currentNode = currentNode->next;
-			currentPosition++;
-		}
-		return -1;
 	}
 	T* getFirstElement() {
 		return head->data;
