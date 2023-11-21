@@ -50,6 +50,14 @@ public:
 			}
 		}
 	}
+	void clean() {
+		Node<T>* currentNode = head;
+		while (currentNode) {
+			head = head->next;
+			delete currentNode;
+			currentNode = head;
+		}
+	}
 	T* getFirstElement() {
 		return head->data;
 	}

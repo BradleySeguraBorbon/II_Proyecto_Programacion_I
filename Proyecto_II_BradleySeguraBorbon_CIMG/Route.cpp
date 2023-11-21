@@ -1,18 +1,5 @@
 #include "Route.h"
 
-//Path* Route::operator[](int path) {
-//	try {
-//		if (path >= 0) {
-//			return &paths[path];
-//		}
-//		else throw(path);
-//	}
-//	catch (int value) {
-//		cout << "Value " << value << " is not allowed: Allowed values are higher or equal than 0" << endl;
-//	}
-//	return nullptr;
-//}
-
 string Route::getName() {
 	return name;
 }
@@ -92,6 +79,7 @@ void Route::draw(CImg<unsigned char>& window) {
 void Route::saveRoute(fstream& file) {
 	file << "Name: " << name << endl;
 	file << "Color: " << to_string(color[0]) << "," << to_string(color[1]) << "," << to_string(color[2]) << endl;
+	file << "Shown: " << (show ? 1 : 0) << endl;
 	Node<Vertice>* currentVertice = vertices.getHeadNode();
 	while (currentVertice) {
 		file << currentVertice->data->getX() << "," << currentVertice->data->getY() << endl;
@@ -123,6 +111,11 @@ void Route::loadRoute(string routeData) {
 		colorsLine.erase(0, pos + 1);
 		i++;
 	}
+
+	pos = routeData.find(' ');
+	endOfLine = routeData.find('\n');
+	show = stoi(routeData.substr(pos + 1, endOfLine - (pos + 1)));
+	routeData.erase(0, endOfLine + 1);
 
 	while (routeData != "") {
 		pos = routeData.find(',');
@@ -156,4 +149,8 @@ void Route::toString() {
 	cout << "ROUTE NAME: " << name << endl;
 	vertices.toString();
 	cout << endl;
+}
+
+bool Route::isEmpty() {
+	return !vertices.getHeadNode();
 }

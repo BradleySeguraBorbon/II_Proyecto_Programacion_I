@@ -9,4 +9,7 @@ public:
 	Node<T>* next;
 	Node<T>* previous;
 	Node(T* value) : data(value), next(nullptr), previous(nullptr) {}
+	~Node() {
+		delete data;
+	}
 };

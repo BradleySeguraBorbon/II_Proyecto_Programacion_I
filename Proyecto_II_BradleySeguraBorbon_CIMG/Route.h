@@ -26,7 +26,9 @@ public:
 		selectedVertice = nullptr;
 	}
 	Route(string _name, unsigned char* _color) : name(_name), color(_color), show(true), isSelected(false), selectedVertice(nullptr) {}
-	~Route() {}
+	~Route() {
+		vertices.clean();
+	}
 	void setName(string _name);
 	void setColor(unsigned char* _color);
 	void setShow(bool _show);
@@ -45,4 +47,5 @@ public:
 	void draw(CImg<unsigned char>& window);
 	bool contains(float x, float y);
 	void toString();
+	bool isEmpty();
 };

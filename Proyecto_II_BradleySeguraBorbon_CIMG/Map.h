@@ -29,6 +29,7 @@ class Map {
 	Button* showRouteButton;
 	Button* hideRouteButton;
 	Button* cancelSelectionButton;
+	Button* changeColorButton;
 	Button* deleteVerticeButton;
 	Button* colorsButton;
 
@@ -45,11 +46,11 @@ public:
 	void manageRouteVisibility();
 	void deleteSelectedVertice();
 	void manageRouteSelection();
+	void changeSelectedRouteColor(CImgDisplay& window, CImg<unsigned char>& background);
 	bool imageContains(CImg<unsigned char>& image, float imageX, float imageY, float mouseX, float mouseY);
 	void drawRoutes(CImg<unsigned char>& window);
 	unsigned char* selectColor(CImgDisplay& window, CImg<unsigned char>& background);
 	bool isRouteSelected(float x, float y);
-	Route* getSelectedRoute();
 	void saveRoutes();
 	void loadRoutes();
 };
