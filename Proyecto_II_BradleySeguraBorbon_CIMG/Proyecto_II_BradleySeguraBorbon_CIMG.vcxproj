@@ -137,6 +137,7 @@
   <ItemGroup>
     <ClInclude Include="Button.h" />
     <ClInclude Include="CImg.h" />
+    <ClInclude Include="Colors.h" />
     <ClInclude Include="List.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Node.h" />

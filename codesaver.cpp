@@ -93,3 +93,10 @@ public:
 		return image;
 	}
 };
+
+
+//Console Window
+
+//HWND consoleWindow = GetConsoleWindow();
+//ShowWindow(consoleWindow, SW_MAXIMIZE);
+//ShowWindow(consoleWindow, SW_MINIMIZE);

@@ -7,62 +7,72 @@ template <typename T>
 class List {
 	Node<T>* head;
 	Node<T>* back;
+	int size;
+
 public:
 	List() : head(nullptr), back(nullptr) {}
-	~List() {}
+	~List() {
+		clean();
+	}
 	void pushBack(T* value) {
 		Node<T>* newNode = new Node<T>(value);
 		if (!head) {
 			head = newNode;
 			back = newNode;
+			size++;
 			return;
 		}
-		back->next = newNode;
-		newNode->previous = back;
+		back->setNext(newNode);
+		newNode->setPrev(back);
 		back = newNode;
+		size++;
 	}
 	void deleteElement(T* value) {
 		if (!head)
 			return;
 		Node<T>* currentNode = head;
-		if (currentNode->data == value) {
-			head = currentNode->next;
+		if (currentNode->getData() == value) {
+			head = currentNode->getNext();
 			if (head)
-				head->previous = nullptr;
+				head->setPrev(nullptr);
 			else 
 				back = nullptr; 
 			delete currentNode;
+			size--;
 		}
 		else {
 			while (currentNode) {
-				if (currentNode->data == value) {
-					currentNode->previous->next = currentNode->next;
-					if (currentNode->next) 
-						currentNode->next->previous = currentNode->previous;
+				if (currentNode->getData() == value) {
+					currentNode->getPrev()->setNext(currentNode->getNext());
+					if (currentNode->getNext())
+						currentNode->getNext()->setPrev(currentNode->getPrev());
 					else {
-						back = currentNode->previous;
-						back->next = nullptr;
+						back = currentNode->getPrev();
+						back->setNext(nullptr);
 					}
 					delete currentNode;
+					size--;
 					return;
 				}
-				currentNode = currentNode->next;
+				currentNode = currentNode->getNext();
 			}
 		}
 	}
 	void clean() {
 		Node<T>* currentNode = head;
 		while (currentNode) {
-			head = head->next;
+			head = head->getNext();
 			delete currentNode;
 			currentNode = head;
 		}
+		back = nullptr;
+		size = 0;
 	}
 	T* getFirstElement() {
-		return head->data;
+		return head->getData();
 	}
 	T* getLastElement() {
-		return back->data;
+		return back->getData();
 	}
 	Node<T>* getHeadNode() {
 		return head;
@@ -73,17 +83,11 @@ public:
 	void toString() {
 		Node<T>* currentNode = head;
 		while (currentNode) {
-			currentNode->data->toString();
-			currentNode = currentNode->next;
+			currentNode->getData()->toString();
+			currentNode = currentNode->getNext();
 		}
 	}
 	int getSize() {
-		int size = 0;
-		Node<T>* currentNode = head;
-		while (currentNode) {
-			size++;
-			currentNode = currentNode->next;
-		}
 		return size;
 	}
 };

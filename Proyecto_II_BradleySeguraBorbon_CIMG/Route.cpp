@@ -63,16 +63,16 @@ void Route::draw(CImg<unsigned char>& window) {
 	unsigned char white[3] = { 255, 255, 255 };
 	Node<Vertice>* currentVertice = vertices.getHeadNode();
 	if (!currentVertice) return;
-	currentVertice->data->draw(window, color, isSelected and !selectedVertice);
-	while (currentVertice->next && show) {
-		window.draw_line(currentVertice->data->getX(), currentVertice->data->getY(), currentVertice->next->data->getX(), currentVertice->next->data->getY(), color);
-		window.draw_line(currentVertice->data->getX() + 0.001, currentVertice->data->getY() + 0.001, currentVertice->next->data->getX() + 0.001, currentVertice->next->data->getY() + 0.001, color);
-		currentVertice = currentVertice->next;
+	currentVertice->getData()->draw(window, color, isSelected and !selectedVertice);
+	while (currentVertice->getNext() && show) {
+		window.draw_line(currentVertice->getData()->getX(), currentVertice->getData()->getY(), currentVertice->getNext()->getData()->getX(), currentVertice->getNext()->getData()->getY(), color);
+		window.draw_line(currentVertice->getData()->getX() + 0.001, currentVertice->getData()->getY() + 0.001, currentVertice->getNext()->getData()->getX() + 0.001, currentVertice->getNext()->getData()->getY() + 0.001, color);
+		currentVertice = currentVertice->getNext();
 	}
 	currentVertice = vertices.getHeadNode();
-	while (currentVertice->next && show) {
-		currentVertice->next->data->draw(window, color, isSelected and !selectedVertice);
-		currentVertice = currentVertice->next;
+	while (currentVertice->getNext() && show) {
+		currentVertice->getNext()->getData()->draw(window, color, isSelected and !selectedVertice);
+		currentVertice = currentVertice->getNext();
 	}
 }
 
@@ -82,8 +82,8 @@ void Route::saveRoute(fstream& file) {
 	file << "Shown: " << (show ? 1 : 0) << endl;
 	Node<Vertice>* currentVertice = vertices.getHeadNode();
 	while (currentVertice) {
-		file << currentVertice->data->getX() << "," << currentVertice->data->getY() << endl;
-		currentVertice = currentVertice->next;
+		file << currentVertice->getData()->getX() << "," << currentVertice->getData()->getY() << endl;
+		currentVertice = currentVertice->getNext();
 	}
 }
 
@@ -132,14 +132,14 @@ void Route::loadRoute(string routeData) {
 bool Route::contains(float x, float y) {
 	Node<Vertice>* currentVertice = vertices.getHeadNode();
 	while (currentVertice) {
-		if (currentVertice->data->contains(x, y)) {
+		if (currentVertice->getData()->contains(x, y)) {
 			if (isSelected and !selectedVertice) {
-				currentVertice->data->setSelection(true);
-				selectedVertice = currentVertice->data;
+				currentVertice->getData()->setSelection(true);
+				selectedVertice = currentVertice->getData();
 			}
 			return true;
 		}
-		currentVertice = currentVertice->next;
+		currentVertice = currentVertice->getNext();
 	}
 	return false;
 }

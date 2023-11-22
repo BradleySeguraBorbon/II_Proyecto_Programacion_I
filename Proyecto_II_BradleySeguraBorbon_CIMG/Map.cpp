@@ -1,6 +1,5 @@
 #include "Map.h"
-
-unsigned char red[3] = { 255, 1, 1 }, blue[3] = { 1, 1, 255 }, green[3] = { 1, 255, 1 };
+#include "Colors.h"
 
 Map::Map() {
 	map.assign("Resources/forza.jpg");
@@ -32,16 +31,31 @@ Map::Map() {
 	selectedRoute = nullptr;
 }
 
+Map::~Map() {
+	routes.clean();
+	selectedRoute = nullptr;
+	delete addRouteButton;
+	delete finishRouteButton;
+	delete deleteRouteButton;
+	delete saveRoutesButton;
+	delete loadRouteButton;
+	delete showRouteButton;
+	delete hideRouteButton;
+	delete cancelSelectionButton;
+	delete changeColorButton;
+	delete deleteVerticeButton;
+	delete colorsButton;
+}
+
 bool Map::imageContains(CImg<unsigned char>& image, float imageX, float imageY, float mouseX, float mouseY) {
 	return mouseX > imageX and mouseX < imageX + image.width() and mouseY > imageY and mouseY < imageY + image.width();
 }
 
 void Map::drawRoutes(CImg<unsigned char>& window) {
-	int position = 0;
 	Node<Route>* currentRoute = routes.getHeadNode();
 	while (currentRoute) {
-		currentRoute->data->draw(window);
-		currentRoute = currentRoute->next;
+		currentRoute->getData()->draw(window);
+		currentRoute = currentRoute->getNext();
 	}
 }
 
@@ -68,14 +82,14 @@ unsigned char* Map::selectColor(CImgDisplay& window, CImg<unsigned char>& backgr
 bool Map::isRouteSelected(float x, float y) {
 	Node<Route>* currentRoute = routes.getHeadNode();
 	while (currentRoute) {
-		if (currentRoute->data->contains(x, y)) {
+		if (currentRoute->getData()->contains(x, y)) {
 			if (!selectedRoute) {
-				currentRoute->data->setSelection(true);
-				selectedRoute = currentRoute->data;
+				currentRoute->getData()->setSelection(true);
+				selectedRoute = currentRoute->getData();
 			}
 			return true;
 		}
-		currentRoute = currentRoute->next;
+		currentRoute = currentRoute->getNext();
 	}
 	return false;
 }
@@ -86,12 +100,12 @@ void Map::saveRoutes() {
 		if (file.is_open()) {
 			Node<Route>* currentRoute = routes.getHeadNode();
 			while (currentRoute) {
-				currentRoute->data->saveRoute(file);
+				currentRoute->getData()->saveRoute(file);
 				file << "================================================" << endl;
-				currentRoute = currentRoute->next;
+				currentRoute = currentRoute->getNext();
 			}
 		}
-		else { throw("error"); }
+		else { throw("ERROR"); }
 	}
 	catch (string error) {
 		cout << error << " --- File Couldn't Open ---" << endl;
@@ -105,7 +119,6 @@ void Map::loadRoutes() {
 	Route* newRoute = nullptr;
 	string currentRoute = "", currentline;
 	file.open("routes.txt", ios::in);
-	int limits = 0;
 	try {
 		if (file.is_open()) {
 			while (getline(file, currentline)) {
@@ -146,11 +159,8 @@ void Map::manageRouteAdding(CImgDisplay& window, CImg<unsigned char>& background
 		finishRouteButton->setAvailability(true);
 		saveRoutesButton->setAvailability(false);
 		loadRouteButton->setAvailability(false);
-		//HWND consoleWindow = GetConsoleWindow();
-		//ShowWindow(consoleWindow, SW_MAXIMIZE);
 		cout << "Ingrese el nombre de la nueva ruta: ";
 		getline(cin, name);
-		//ShowWindow(consoleWindow, SW_MINIMIZE);
 		color = selectColor(window, background);
 		Route* newRoute = new Route(name, color);
 		routes.pushBack(newRoute);
@@ -167,6 +177,7 @@ void Map::deleteSelectedRoute() {
 	deleteRouteButton->setAvailability(false);
 	hideRouteButton->setAvailability(false);
 	cancelSelectionButton->setAvailability(false);
+	changeColorButton->setAvailability(false);
 	selectedRoute = nullptr;
 }
 
@@ -216,13 +227,13 @@ void Map::deleteSelectedVertice() {
 	deleteRouteButton->setAvailability(true);
 	hideRouteButton->setAvailability(true);
 	cancelSelectionButton->setAvailability(true);
+	changeColorButton->setAvailability(true);
 	if (selectedRoute->isEmpty())
 		deleteSelectedRoute();
 }
 
 void Map::manageRouteSelection() {
 	if (selectedRoute) cout << selectedRoute->getName() << "IS THE ROUTE SELECTED" << endl;
-	else cout << "No route selected" << endl;
 	addRouteButton->setAvailability(false);
 	loadRouteButton->setAvailability(false);
 	saveRoutesButton->setAvailability(false);
@@ -323,13 +334,12 @@ void Map::displayMap() {
 		if (selectedRoute) {
 			string message = "RUTA SELECCIONADA:\n" + selectedRoute->getName();
 			background.draw_text(42, 650, message.c_str(), cian, 255, 1.0, 45);
-			//background.draw_text(440, 680, selectedRoute->getName().c_str(), white, 255, 1.0, 45);
 		}
 		Node<Button>* currentButton= buttons.getHeadNode();
 		while (currentButton) {
-			if (currentButton->data->isAvailable())
-				background.draw_image(currentButton->data->getX(), currentButton->data->getY(), *currentButton->data->getButtonImage());
-			currentButton = currentButton->next;
+			if (currentButton->getData()->isAvailable())
+				background.draw_image(currentButton->getData()->getX(), currentButton->getData()->getY(), *currentButton->getData()->getButtonImage());
+			currentButton = currentButton->getNext();
 		}
 		window.display(background);
 		window.wait();
